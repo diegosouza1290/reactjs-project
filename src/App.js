@@ -1,13 +1,51 @@
 // import logo from './logo.svg';
 // import { Component } from 'react';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import Modal from './components/modal';
+import api from "./services/api";
+import Table from './Table';
 
 
 function App() {
   const [openModal, setModalOpen] = useState(false)
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    api
+      .get("/users/diegosouza1290")
+      .then((response) => setData(response.data))
+      .catch((err) => {
+        console.error("ops! ocorreu um erro" + err);
+      });
+  }, []);
+
+  // let dataList = data.docs;
+
+  console.log(data)
+
+  // Colunas da nossa tabela
+  const columns = useMemo(
+    () => [
+      {
+        // Primeiro grupo - Informações do passageiro
+        Header: "Informações sobre os livros",
+        // Colunas do primeiro grupo
+        columns: [
+          {
+            Header: "Nome",
+            accessor: "name"
+          },
+          {
+            Header: "Login",
+            accessor: "login"
+          }
+        ]
+      }
+    ],
+    []
+  );
 
   return (
     <div className="App">
@@ -18,26 +56,29 @@ function App() {
           Abrir modal
         </button>
       </div>
+      {/* 
+      <div className="App">
+        <Table columns={columns} data={data} />
+      </div> */}
 
       <Modal isOpen={openModal} setModalOpen={() => setModalOpen(!openModal)}>
         {/* <p>Oi eu sou o children e estou em teste</p> */}
+        {/* 
         <table>
           <tr>
-            <th>Company</th>
-            <th>Contact</th>
-            <th>Country</th>
+            <th>Usuário</th>
+            <th>Biografia</th>
+            <th>Data de inscrição</th>
           </tr>
-          <tr>
-            <td>Alfreds Futterkiste</td>
-            <td>Maria Anders</td>
-            <td>Germany</td>
-          </tr>
-          <tr>
-            <td>Centro comercial Moctezuma</td>
-            <td>Francisco Chang</td>
-            <td>Mexico</td>
-          </tr>
-        </table>
+
+          {dataList.map((item) =>
+            <tr key={item.name}>{item._id}</tr>
+          )}
+
+        </table> */}
+        <div className="App">
+          <Table columns={columns} data={data} />
+        </div>
 
       </Modal>
     </div>
