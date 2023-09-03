@@ -1,11 +1,10 @@
 // import logo from './logo.svg';
 // import { Component } from 'react';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Modal from './components/modal';
 import api from "./services/api";
-import Table from './Table';
 
 
 function App() {
@@ -14,38 +13,14 @@ function App() {
 
   useEffect(() => {
     api
-      .get("/users/diegosouza1290")
-      .then((response) => setData(response.data))
+      .get("/movie")
+      .then((response) => setData(response.data.docs))
       .catch((err) => {
         console.error("ops! ocorreu um erro" + err);
       });
   }, []);
 
-  // let dataList = data.docs;
-
-  console.log(data)
-
-  // Colunas da nossa tabela
-  const columns = useMemo(
-    () => [
-      {
-        // Primeiro grupo - Informações do passageiro
-        Header: "Informações sobre os livros",
-        // Colunas do primeiro grupo
-        columns: [
-          {
-            Header: "Nome",
-            accessor: "name"
-          },
-          {
-            Header: "Login",
-            accessor: "login"
-          }
-        ]
-      }
-    ],
-    []
-  );
+  // console.log("data: ", data.length)
 
   return (
     <div className="App">
@@ -56,78 +31,66 @@ function App() {
           Abrir modal
         </button>
       </div>
-      {/* 
-      <div className="App">
-        <Table columns={columns} data={data} />
-      </div> */}
 
-      <Modal isOpen={openModal} setModalOpen={() => setModalOpen(!openModal)}>
-        {/* <p>Oi eu sou o children e estou em teste</p> */}
-        {/* 
+      <div>
         <table>
           <tr>
-            <th>Usuário</th>
-            <th>Biografia</th>
-            <th>Data de inscrição</th>
+            <th>ID do Livro</th>
+            <th>Título</th>
+            <th>Detalhes</th>
           </tr>
 
-          {dataList.map((item) =>
-            <tr key={item.name}>{item._id}</tr>
+          {data.map((item) =>
+            <tr key={item._id}>
+              <td>{item._id}</td>
+              <td>{item.name}</td>
+              <td>
+                <button onClick={() => { setModalOpen(true) }}>
+                  Detalhes
+                </button>
+              </td>
+            </tr>
           )}
 
-        </table> */}
-        <div className="App">
-          <Table columns={columns} data={data} />
+        </table>
+      </div>
+
+      <Modal isOpen={openModal} setModalOpen={() => setModalOpen(!openModal)}>
+
+        <table>
+          <tr>
+            <th>ID do Livro</th>
+            <th>Título</th>
+            <th>runtimeInMinutes</th>
+            <th>budgetInMillions</th>
+            <th>boxOfficeRevenueInMillions</th>
+            <th>academyAwardNominations</th>
+            <th>academyAwardWins</th>
+            <th>rottenTomatoesScore</th>
+          </tr>
+
+          {data.map((item) =>
+            <tr key={item._id}>
+              <td>{item._id}</td>
+              <td>{item.name}</td>
+              <td>{item.runtimeInMinutes}</td>
+              <td>{item.budgetInMillions}</td>
+              <td>{item.boxOfficeRevenueInMillions}</td>
+              <td>{item.academyAwardNominations}</td>
+              <td>{item.academyAwardWins}</td>
+              <td>{item.rottenTomatoesScore}</td>
+            </tr>
+          )}
+
+        </table>
+
+        <div style={{ peddingTop: "5px" }}>
+          Foram encontrados: {data.length} registros
         </div>
 
       </Modal>
     </div>
   )
 }
-
-
-
-
-// class App extends Component {
-
-//   state = {
-//     name: "Diego Souza",
-//     counter: 0
-//   };
-
-//   handlePclick = () => {
-//     this.setState({ name: "Novo nome" });
-//   }
-
-//   handleAClick = (event) => {
-//     event.preventDefault();
-//     const { counter } = this.state;
-//     this.setState({ counter: counter + 1 });
-//   }
-
-//   render() {
-//     const { name, counter } = this.state;
-
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <p onClick={this.handlePclick}>
-//             {name} {counter}
-//           </p>
-//           <a
-//             onClick={this.handleAClick}
-//             className="App-link"
-//             href="https://reactjs.org"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Learn React
-//           </a>
-//         </header>
-//       </div>
-//     );
-//   }
-// }
 
 export default App;
